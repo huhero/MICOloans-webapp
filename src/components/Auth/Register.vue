@@ -74,9 +74,9 @@
               </form>
               <hr />
               <div class="text-center">
-                <a class="small" @click="changeForm"
-                  >Already have an account? Login!</a
-                >
+                <p class="change-form" @click="changeForm">
+                  Already have an account? Login!
+                </p>
               </div>
             </div>
           </div>

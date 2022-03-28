@@ -17,7 +17,7 @@ export default {
     Register,
   },
   setup() {
-    let showLogin = ref(false);
+    let showLogin = ref(true);
 
     const changeForm = () => {
       showLogin.value = !showLogin.value;

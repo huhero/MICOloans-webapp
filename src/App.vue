@@ -11765,4 +11765,13 @@ input.error-input {
   border-color: #faa;
   background-color: #ffeded;
 }
+
+.change-form {
+  text-align: center;
+}
+
+.change-form:hover{
+  cursor: pointer;
+  opacity: 0.6;
+}
 </style>
