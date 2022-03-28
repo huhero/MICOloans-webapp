@@ -1,0 +1,141 @@
+<template>
+  <div class="container">
+    <div class="card o-hidden border-0 shadow-lg my-5">
+      <div class="card-body p-0">
+        <!-- Nested Row within Card Body -->
+        <div class="row">
+          <div class="col-lg-5 d-none d-lg-block bg-register-image"></div>
+          <div class="col-lg-7">
+            <div class="p-5">
+              <div class="text-center">
+                <h1 class="h4 text-gray-900 mb-4">Create an Account!</h1>
+              </div>
+              <form class="user" @submit.prevent="onRegister">
+                <div class="form-group row">
+                  <div class="col-sm-6 mb-3 mb-sm-0">
+                    <input
+                      type="text"
+                      class="form-control form-control-user"
+                      id="firstName"
+                      placeholder="First Name"
+                      :class="{ 'error-input': formError.firstName }"
+                      v-model="formData.firstName"
+                    />
+                  </div>
+                  <div class="col-sm-6">
+                    <input
+                      type="text"
+                      class="form-control form-control-user"
+                      id="lastName"
+                      placeholder="Last Name"
+                      :class="{ 'error-input': formError.lastName }"
+                      v-model="formData.lastName"
+                    />
+                  </div>
+                </div>
+                <div class="form-group">
+                  <input
+                    type="email"
+                    class="form-control form-control-user"
+                    id="inputEmail"
+                    placeholder="Email Address"
+                    :class="{ 'error-input': formError.email }"
+                    v-model="formData.email"
+                  />
+                </div>
+                <div class="form-group row">
+                  <div class="col-sm-6 mb-3 mb-sm-0">
+                    <input
+                      type="password"
+                      class="form-control form-control-user"
+                      id="Password"
+                      placeholder="Password"
+                      :class="{ 'error-input': formError.password }"
+                      v-model="formData.password"
+                    />
+                  </div>
+                  <div class="col-sm-6">
+                    <input
+                      type="password"
+                      class="form-control form-control-user"
+                      id="RepeatPassword"
+                      placeholder="Repeat Password"
+                      :class="{ 'error-input': formError.repeatPassword }"
+                      v-model="formData.repeatPassword"
+                    />
+                  </div>
+                </div>
+                <button
+                  type="submit"
+                  class="btn btn-primary btn-user btn-block"
+                >
+                  Register Account
+                </button>
+              </form>
+              <hr />
+              <div class="text-center">
+                <a class="small" @click="changeForm"
+                  >Already have an account? Login!</a
+                >
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</template>
+
+<script>
+import { ref } from "vue";
+import * as Yup from "yup";
+
+export default {
+  name: "Register",
+  props: {
+    changeForm: Function,
+  },
+  setup() {
+    let formData = {};
+    let formError = ref({});
+
+    const schemaForm = Yup.object().shape({
+      firstName: Yup.string().required(true),
+      lastName: Yup.string().required(true),
+      email: Yup.string().email(true).required(true),
+      password: Yup.string().required(true),
+      repeatPassword: Yup.string()
+        .required(true)
+        .oneOf([Yup.ref("password"), true]),
+    });
+
+    const onRegister = async () => {
+      formError.value = {};
+
+      try {
+        await schemaForm.validate(formData, { abortEarly: false });
+        console.log("TODO OK");
+      } catch (err) {
+        err.inner.forEach((error) => {
+          formError.value[error.path] = error.message;
+        });
+      }
+    };
+
+    return {
+      formData,
+      formError,
+
+      onRegister,
+    };
+  },
+};
+</script>
+
+<style>
+.bg-register-image {
+  background: url("https://source.unsplash.com/Mv9hjnEUHR4/600x800");
+  background-position: center;
+  background-size: cover;
+}
+</style>

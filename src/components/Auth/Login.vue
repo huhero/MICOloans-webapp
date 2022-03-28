@@ -1,10 +1,10 @@
 <template>
-  <button class="btn btn-primary">Micoloans</button>
+  <h1>Login</h1>
 </template>
 
 <script>
 export default {
-  name: "Home",
+  name: "Login",
 };
 </script>
 
