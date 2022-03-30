@@ -35,6 +35,17 @@
                         v-model="formData.password"
                       />
                     </div>
+                    <div
+                      class="alert text-center"
+                      role="alert"
+                      :class="{
+                        'alert-danger': errorLogin,
+                        'alert-success': !errorLogin,
+                      }"
+                      v-if="messageError"
+                    >
+                      {{ messageError }}
+                    </div>
                     <button
                       class="btn btn-primary btn-user btn-block"
                       type="submit"
@@ -61,6 +72,7 @@
 <script>
 import { ref } from "vue";
 import * as Yup from "yup";
+import { auth } from "../../utils/firebase";
 
 export default {
   name: "Login",
@@ -70,6 +82,8 @@ export default {
   setup() {
     let formData = {};
     let formError = ref({});
+    let messageError = ref("");
+    let errorLogin = ref(false);
 
     const schemaFrom = Yup.object().shape({
       email: Yup.string().email(true).required(true),
@@ -78,20 +92,32 @@ export default {
 
     const onLogin = async () => {
       formError.value = {};
+      errorLogin.value = false;
+
       try {
         await schemaFrom.validate(formData, { abortEarly: false });
-        console.log("TODO OK");
+
+        try {
+          let { email, password } = formData;
+
+          await auth.signInWithEmailAndPassword(email, password);
+        } catch (error) {
+          errorLogin.value = true;
+          messageError.value = error.message;
+        }
+        //
       } catch (err) {
         err.inner.forEach((error) => {
           formError.value[error.path] = error.message;
         });
-        console.log(formError);
       }
     };
 
     return {
       formData,
       formError,
+      messageError,
+      errorLogin,
 
       onLogin,
     };

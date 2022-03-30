@@ -65,6 +65,17 @@
                     />
                   </div>
                 </div>
+                <div
+                  class="alert text-center"
+                  role="alert"
+                  :class="{
+                    'alert-danger': errorRegister,
+                    'alert-success': !errorRegister,
+                  }"
+                  v-if="messageError"
+                >
+                  {{ messageError }}
+                </div>
                 <button
                   type="submit"
                   class="btn btn-primary btn-user btn-block"
@@ -90,14 +101,18 @@
 import { ref } from "vue";
 import * as Yup from "yup";
 
+import { auth } from "../../utils/firebase";
+
 export default {
   name: "Register",
   props: {
     changeForm: Function,
   },
-  setup() {
+  setup(props) {
     let formData = {};
     let formError = ref({});
+    let messageError = ref("");
+    let errorRegister = ref(false);
 
     const schemaForm = Yup.object().shape({
       firstName: Yup.string().required(true),
@@ -111,11 +126,28 @@ export default {
 
     const onRegister = async () => {
       formError.value = {};
+      messageError.value = "";
+      errorRegister.value = false;
 
       try {
         await schemaForm.validate(formData, { abortEarly: false });
-        console.log("TODO OK");
+
+        try {
+          const { email, password } = formData;
+
+          await auth.createUserWithEmailAndPassword(email, password);
+
+          messageError.value = "Registred";
+          setTimeout(() => {
+            props.changeForm();
+          }, 1500);
+          //
+        } catch (error) {
+          errorRegister.value = true;
+          messageError.value = error.message;
+        }
       } catch (err) {
+        errorRegister.value = true;
         err.inner.forEach((error) => {
           formError.value[error.path] = error.message;
         });
@@ -125,6 +157,8 @@ export default {
     return {
       formData,
       formError,
+      messageError,
+      errorRegister,
 
       onRegister,
     };

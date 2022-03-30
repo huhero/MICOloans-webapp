@@ -4,6 +4,9 @@
 </template>
 
 <script>
+import { onMounted, computed } from "vue";
+import { useStore } from "vuex";
+import { auth } from "./utils/firebase";
 import Auth from "./views/Auth.vue";
 
 export default {
@@ -12,7 +15,14 @@ export default {
     Auth,
   },
   setup() {
-    const user = false;
+    const store = useStore();
+    const user = computed(() => store.state.user);
+
+    onMounted(() => {
+      auth.onAuthStateChanged((user) => {
+        store.commit("setUser", user);
+      });
+    });
 
     return {
       user,
@@ -11770,7 +11780,7 @@ input.error-input {
   text-align: center;
 }
 
-.change-form:hover{
+.change-form:hover {
   cursor: pointer;
   opacity: 0.6;
 }
