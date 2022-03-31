@@ -47,7 +47,7 @@
                       {{ messageError }}
                     </div>
                     <button
-                      class="btn btn-primary btn-user btn-block"
+                      class="btn btn-dark btn-user btn-block"
                       type="submit"
                     >
                       Login

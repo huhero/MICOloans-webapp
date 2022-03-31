@@ -76,10 +76,7 @@
                 >
                   {{ messageError }}
                 </div>
-                <button
-                  type="submit"
-                  class="btn btn-primary btn-user btn-block"
-                >
+                <button type="submit" class="btn btn-dark btn-user btn-block">
                   Register Account
                 </button>
               </form>
