@@ -23,7 +23,9 @@
       >
         <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
           <li class="nav-item">
-            <a class="nav-link active" aria-current="page" href="#">Home</a>
+            <router-link class="nav-link active" aria-current="page" to="/">
+              Home
+            </router-link>
           </li>
           <li class="nav-item"><a class="nav-link" href="#">Link</a></li>
           <li class="nav-item dropdown">
@@ -35,18 +37,19 @@
               data-bs-toggle="dropdown"
               :aria-expanded="dropButtonOpen"
               @click="onDropButton"
-              >Dropdown</a
             >
+              Hola, {{ user.displayName || user.email }}
+            </a>
             <ul
               class="dropdown-menu dropdown-menu-end"
               aria-labelledby="navbarDropdown"
               :class="{ show: dropButtonOpen }"
             >
               <li>
-                <a class="dropdown-item" href="#">
+                <router-link class="dropdown-item" to="/account">
                   <b-icon-person-fill />
                   My account
-                </a>
+                </router-link>
               </li>
               <!-- <li><a class="dropdown-item" href="#">Another action</a></li> -->
               <li><hr class="dropdown-divider" /></li>
@@ -71,13 +74,16 @@
 </template>
 
 <script>
-import { ref } from "vue";
+import { ref, computed } from "vue";
+import { useStore } from "vuex";
 import { auth } from "../utils/firebase";
 export default {
   name: "BasicLayout",
   setup() {
     let navResponsive = ref(false);
     let dropButtonOpen = ref(false);
+    const store = useStore();
+    const user = computed(() => store.state.user);
 
     const onNavResponsive = () => {
       navResponsive.value = !navResponsive.value;
@@ -91,6 +97,7 @@ export default {
     };
 
     return {
+      user,
       navResponsive,
       dropButtonOpen,
 
